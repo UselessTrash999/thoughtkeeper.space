@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>思维记录工具</title>
+    <meta name="description" content="一个简洁的思维整理工具，帮助分类记录和管理各种想法">
+    
+    <!-- PWA支持 -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="思维记录">
+    
+    <!-- SEO优化 -->
+    <meta name="keywords" content="思维记录,笔记工具,想法整理,分类记录,离线笔记">
+    <meta name="author" content="思维记录工具">
+    <meta property="og:title" content="思维记录工具">
+    <meta property="og:description" content="一个简洁的思维整理工具，帮助分类记录和管理各种想法">
+    <meta property="og:type" content="website">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- 加载指示器 -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h2>思维记录工具</h2>
+            <p>正在加载中...</p>
+        </div>
+    </div>
+
+    <div id="app">
+        <!-- 主界面容器 -->
+        <div id="main-view" class="view">
+            <header class="app-header">
+                <div class="header-content">
+                    <div class="header-main">
+                        <h1 data-i18n="appTitle">ThoughtKeeper</h1>
+                        <p class="subtitle" data-i18n="appSubtitle">整理你的想法，分类你的思考</p>
+                    </div>
+                    <div class="header-actions">
+                        <button id="lang-btn" class="lang-btn" title="Language">🌐</button>
+                        <button id="settings-btn" class="settings-btn" data-i18n-title="ui.settings">⚙️</button>
+                    </div>
+                </div>
+            </header>
+            
+            <main id="grid-container" class="grid-container">
+                <!-- 6个分类方块将在这里动态生成 -->
+            </main>
+        </div>
+
+        <!-- 编辑界面容器 -->
+        <div id="editor-view" class="view hidden">
+            <header class="editor-header">
+                <button id="back-btn" class="back-btn" data-i18n="ui.back">← 返回</button>
+                <nav class="breadcrumb">
+                    <span class="breadcrumb-item" data-i18n="appTitle">ThoughtKeeper</span>
+                    <span class="breadcrumb-separator">></span>
+                    <span id="category-breadcrumb" class="breadcrumb-item current"></span>
+                </nav>
+                <h2 id="category-title" class="category-title"></h2>
+            </header>
+            
+            <main id="editor-container" class="editor-container">
+                <!-- 编辑器将在这里动态生成 -->
+            </main>
+        </div>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="ui.dataManagement">数据管理</h3>
+                <button id="close-modal" class="close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4 data-i18n="ui.languageSettings">语言设置</h4>
+                    <div class="language-selector">
+                        <button id="lang-zh" class="lang-option active" data-lang="zh">中文</button>
+                        <button id="lang-en" class="lang-option" data-lang="en">English</button>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4 data-i18n="ui.dataBackup">数据备份</h4>
+                    <p data-i18n="ui.dataBackupDesc">将您的所有思维记录导出为JSON文件</p>
+                    <button id="backup-btn" class="action-btn">📥 <span data-i18n="ui.backupData">备份数据</span></button>
+                </div>
+                
+                <div class="settings-section">
+                    <h4 data-i18n="ui.dataRestore">数据恢复</h4>
+                    <p data-i18n="ui.dataRestoreDesc">从备份文件恢复您的思维记录</p>
+                    <input type="file" id="restore-file" accept=".json" style="display: none;">
+                    <button id="restore-btn" class="action-btn">📤 <span data-i18n="ui.restoreData">恢复数据</span></button>
+                </div>
+                
+                <div class="settings-section">
+                    <h4 data-i18n="ui.storageInfo">存储信息</h4>
+                    <div id="storage-info">
+                        <p data-i18n="ui.loadingStorageInfo">正在加载存储信息...</p>
+                    </div>
+                </div>
+                
+                <div class="settings-section danger">
+                    <h4 data-i18n="ui.dangerousOperations">危险操作</h4>
+                    <p data-i18n="ui.clearAllDataDesc">清空所有数据（此操作不可恢复）</p>
+                    <button id="clear-data-btn" class="action-btn danger">🗑️ <span data-i18n="ui.clearAllData">清空所有数据</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户引导弹窗 -->
+    <div id="welcome-modal" class="modal hidden">
+        <div class="modal-content welcome-modal">
+            <div class="modal-header">
+                <h3 data-i18n="ui.welcome">欢迎使用 ThoughtKeeper！</h3>
+                <button id="close-welcome" class="close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="welcome-content">
+                    <div class="welcome-step">
+                        <div class="step-icon">🎯</div>
+                        <h4 data-i18n="ui.welcomeSteps.categorize.title">分类思考</h4>
+                        <p data-i18n="ui.welcomeSteps.categorize.desc">6个分类方块帮您整理不同类型的想法和思考。</p>
+                    </div>
+                    
+                    <div class="welcome-step">
+                        <div class="step-icon">✍️</div>
+                        <h4 data-i18n="ui.welcomeSteps.richText.title">富文本编辑</h4>
+                        <p data-i18n="ui.welcomeSteps.richText.desc">支持加粗、斜体、列表等格式，让您的想法更有条理。</p>
+                    </div>
+                    
+                    <div class="welcome-step">
+                        <div class="step-icon">💾</div>
+                        <h4 data-i18n="ui.welcomeSteps.autoSave.title">自动保存</h4>
+                        <p data-i18n="ui.welcomeSteps.autoSave.desc">3秒自动保存，数据存储在本地，保护您的隐私。</p>
+                    </div>
+                    
+                    <div class="welcome-tips">
+                        <h4>💡 <span data-i18n="ui.keyboardShortcuts">快捷键提示</span></h4>
+                        <ul>
+                            <li><kbd>Ctrl+B</kbd> <span data-i18n="ui.bold">加粗文字</span></li>
+                            <li><kbd>Ctrl+I</kbd> <span data-i18n="ui.italic">斜体文字</span></li>
+                            <li><kbd>ESC</kbd> <span data-i18n="ui.back">返回主界面</span></li>
+                            <li><kbd>Alt+1~6</kbd> 快速切换分类</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="welcome-actions">
+                    <button id="start-using" class="action-btn" data-i18n="ui.startUsing">开始使用</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 文件引用 -->
+    <script src="js/i18n.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/editor.js"></script>
+    <script src="js/main-grid.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

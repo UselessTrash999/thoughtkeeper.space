@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据存储功能测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .feature-list { background: #f0f9ff; padding: 15px; border-radius: 5px; }
+        .feature-list h3 { margin-top: 0; color: #2563eb; }
+        .test-steps { background: #fef3c7; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        iframe { width: 100%; height: 600px; border: 1px solid #ddd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>数据存储和自动保存功能测试</h1>
+    
+    <div class="test-section">
+        <div class="feature-list">
+            <h3>✅ 已实现的存储功能</h3>
+            <ul>
+                <li><strong>自动保存:</strong> 3秒防抖自动保存机制</li>
+                <li><strong>保存状态:</strong> 实时显示保存状态（保存中、已保存、保存失败）</li>
+                <li><strong>错误处理:</strong> 保存失败时自动重试</li>
+                <li><strong>存储监控:</strong> 存储空间使用情况监控</li>
+                <li><strong>数据备份:</strong> 导出所有数据为JSON文件</li>
+                <li><strong>数据恢复:</strong> 从备份文件恢复数据</li>
+                <li><strong>版本迁移:</strong> 自动处理数据格式升级</li>
+                <li><strong>存储降级:</strong> localStorage不可用时使用内存存储</li>
+                <li><strong>数据清理:</strong> 存储空间不足时自动清理旧数据</li>
+            </ul>
+        </div>
+        
+        <div class="test-steps">
+            <h3>🧪 测试步骤</h3>
+            <ol>
+                <li><strong>自动保存测试:</strong>
+                    <ul>
+                        <li>进入任意分类编辑界面</li>
+                        <li>输入一些文字，观察保存状态变化</li>
+                        <li>等待3秒，确认自动保存</li>
+                        <li>刷新页面，确认内容已保存</li>
+                    </ul>
+                </li>
+                
+                <li><strong>数据管理测试:</strong>
+                    <ul>
+                        <li>点击右上角的设置按钮（⚙️）</li>
+                        <li>查看存储信息</li>
+                        <li>测试数据备份功能</li>
+                        <li>测试数据恢复功能（可选）</li>
+                    </ul>
+                </li>
+                
+                <li><strong>数据持久化测试:</strong>
+                    <ul>
+                        <li>在多个分类中添加内容</li>
+                        <li>关闭浏览器标签页</li>
+                        <li>重新打开，确认所有数据都已恢复</li>
+                    </ul>
+                </li>
+                
+                <li><strong>错误处理测试:</strong>
+                    <ul>
+                        <li>打开浏览器开发者工具</li>
+                        <li>在Console中输入: localStorage.clear()</li>
+                        <li>观察应用是否能正常处理存储错误</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>实际应用测试</h2>
+        <p>在下方的应用中测试所有存储功能：</p>
+        <iframe src="index.html" title="思维记录工具"></iframe>
+    </div>
+</body>
+</html>
